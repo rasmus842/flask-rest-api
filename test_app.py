@@ -149,7 +149,6 @@ class TestAPI(unittest.TestCase):
                 self.assertEqual(r.status_code, 200)
                 self.assertEqual(r.headers["Content-Type"], "application/json")
                 self.assertTrue("product deleted" in json.dumps(r.json()))
-        pass
 
 if __name__ == "__main__":
     unittest.main()
