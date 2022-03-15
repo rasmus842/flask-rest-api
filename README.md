@@ -25,67 +25,77 @@ Then Clone this git repository in the same directory:
 
     flask-rest-api/$ git clone git@github.com:rasmus842/flask-rest-api.git
     
+There should be the following files in your folder now: requirements.txt, app.py, help.py, and test_app.py.
+
+    flask-rest-api/$ ls -a
+
 Next, create a new python virtual environment in that directory with a name such as .venv:
 
     flask-rest-api/$ python3 -m venv .venv
 
 Activate venv:
+(note: after actiavtin venv, python3 and pip3 may be run on commandline with python and pip respectively
 
-    flask-rest-api/$ source .venv3/bin/activate
-
-There should be the following files in your folder now: requirements.txt, app.py, help.py, test_app.py. 
-And also folders containing .html-files in templates/ (and static/ which is empty at this time).
+    flask-rest-api/$ source .venv/bin/activate
 
 The dependencies to run the application are located in requirements.txt
 Install dependencies by running the following command in your command line:
+(packages: Flask, Flask-Restful, Flask-SQLAlchemy, requests)
 
-    (.venv) pip install -r requirements.txt
+    (.venv) $ pip install -r requirements.txt
 
 Check if installed dependencies match the contents of requirements.txt by running:
 
-    (.venv) pip freeze
+    (.venv) $ pip freeze
 
 Now everything should be set for running the application.
 To run flask application, run command:
 
-    (.venv) python app.py
+    (.venv) $ python app.py
 
 Or alternatively:
 
-    (.venv) export FLASK_APP=app.py
-    (.venv) flask run
+    (.venv) $ export FLASK_APP=app.py
+    (.venv) $ flask run
 
-The api should now be running and can be opened by pressing the URL with ctrl+click or by typing "http://127.0.0.1:5000" into browser.
-To exit api press ctrl+c in terminal window.
-The home page is where you may search for products.
-Choose a category and click submit. After that a table with all products within that categorie will be displayed.
-If the category is empty there will be simply be no products in the table.
-If the category itself doesn't exist or if something went wrong, you will be directed to an error page, and click submit to redirect to home page.
+At first we should create a new database with python:
 
-There shouldn't be any products or categories displayed on the pages because the database is not yet created.
-Create the database by running the following commands in the terminal:
+    (.venv) $ python
+    (.venv) >>> from app import db
+    (.venv) >>> db.create_all()
+    (.venv) >>> exit()
+    (.venv) $ 
 
-    (.venv) python
-    (.venv) from app import db
-    (.venv) db.create_all()
-    (.venv) exit()
+Fill the database with some data by running help.py:
 
-Fill the database by running help.py:
+    (.venv) $ python help.py
 
-    (.venv) python help.py
-
-You may view the database with sqlite by running the following commands:
+You may view and manipulate the database with sqlite by running the following commands:
 
     (.venv) sqlite3 database.db
-    (.venv) .schema
-    
-    (.venv) SELECT * FROM categories;
-    (.venv) SELECT * FROM products;
-
+    (.venv) >>> .schema
+    (.venv) >>> SELECT * FROM categories;
+    (.venv) >>> SELECT * FROM products;
     (.venv) .exit
 
+To access api use curl from the command line:
+
+    $ curl -i http://127.0.0.1:5000
+
+You may also use api with python (or any other tool for that matter, get-requests from browser with url aswell):
+(note: you do not necessarily have to use venv for this, unless you want to avoid conflits with requests' package other versions)
+
+    (.venv) $ python
+    (.venv) >>> import requests
+    (.venv) >>> response = requests.get("http://127.0.0.1/category/2")
+    (.venv) >>> response
+    output: <Resonse status_code>
+    (.venv) >>> response.json()
+    output: <json-format code>
+    (.venv) >>> response.headers
+    output: <response headers>
+    
 To run unit tests:
-(important to note app.py should be running while tests are run, otherwise failure will occur)
 
     (.venv) python test_app.py
 
@@ -93,3 +103,7 @@ And finally, to exit virtual environment, run:
 
     (.venv) deactivate
     $
+    
+Delete unnecessary files manually:
+
+    $ rm -Rf flask-rest-api
