@@ -5,9 +5,9 @@ Make sure you have pip, python3, python3 virtual environment, and sqlite3 instal
 
     sudo apt update
     sudo apt upgrade
-    python3 -V
-    sqlite3 -V
-    pip -V
+    python3 --version
+    sqlite3 --version
+    pip --version
 
 Python-3.8.10, sqlite3-3.31.1 for this application, pip 9.0.1 (python 3.X) or similar
 If need be, install or update python, sqlite, and python virtualenv.
