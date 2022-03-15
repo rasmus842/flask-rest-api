@@ -17,7 +17,7 @@ pluggy==1.0.0
 py==1.11.0
 pyparsing==3.0.7
 pytz==2021.3
-requests=2.27.1
+requests==2.27.1
 six==1.16.0
 SQLAlchemy==1.4.32
 tomli==2.0.1
