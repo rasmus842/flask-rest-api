@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+<!-- Administration page. Choose categories or products and perform crud -->
+
+{% block title %} Admin {% endblock %}
+
+{% block body %}
+
+    <!-- receives a list of categories to display to user
+         user selects and inputs a category and is redirected to products page -->
+    <div class="mb-3">
+        <h1>Choose category!</h1>
+        <form action="/shop/products/" method="post">
+            <!-- <input autocomplete="off" autofocus name="name" placeholder="Type product name" type="text"> -->
+            <select class="form-class" name="category_name">
+                <option disable selected>Select category</option>
+                {% for name in category_names %}
+                    <option>{{ name }}</option>
+                {% endfor %}
+            </select>
+            <input type="submit"> 
+        </form>
+    </div>
+
+{% endblock %}

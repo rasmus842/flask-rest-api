@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+<!-- No products in this category, or the category doesn't exist -->
+
+{% block title %} Out of stock {% endblock %}
+
+{% block body %}
+<div>
+    <h1>{{ message }}</h1>
+    <div>Please return back to main page!</div>
+    <form action="/", method="get">
+        <input type="submit">
+    </form>
+</div>
+{% endblock %}
