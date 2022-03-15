@@ -40,7 +40,7 @@ Activate venv:
 
 The dependencies to run the application are located in requirements.txt
 Install dependencies by running the following command in your command line:
-(packages: Flask, Flask-Restful, Flask-SQLAlchemy, requests)
+(packages: Flask, flask-restful, Flask-SQLAlchemy, requests)
 
     (.venv) $ pip install -r requirements.txt
 
@@ -49,6 +49,15 @@ Check if installed dependencies match the contents of requirements.txt by runnin
     (.venv) $ pip freeze
 
 Now everything should be set for running the application.
+
+At first we should create a new database with python CLI:
+
+    (.venv) $ python
+    (.venv) >>> from app import db
+    (.venv) >>> db.create_all()
+    (.venv) >>> exit()
+    (.venv) $ 
+    
 To run flask application, run command:
 
     (.venv) $ python app.py
@@ -58,14 +67,11 @@ Or alternatively:
     (.venv) $ export FLASK_APP=app.py
     (.venv) $ flask run
 
-At first we should create a new database with python:
+You may ctrl+click the URL. The application is now running. To terminate, press ctrl+c.
+In another terminal window, enter same diretory and activate venv:
 
-    (.venv) $ python
-    (.venv) >>> from app import db
-    (.venv) >>> db.create_all()
-    (.venv) >>> exit()
-    (.venv) $ 
-
+    flask-rest-api/$ python3 -m venv .venv
+    
 Fill the database with some data by running help.py:
 
     (.venv) $ python help.py
@@ -78,31 +84,33 @@ You may view and manipulate the database with sqlite by running the following co
     (.venv) >>> SELECT * FROM products;
     (.venv) .exit
 
-To access api use curl from the command line:
+api end-points:
+
+    base = "http://127.0.0.1:5000"
+    get list of categories: base + "/categories"
+    get list of products from category (<category_id>): base + "products/<category_id>"
+    get/put/patch/delete category: base + "/category/<category_id>"
+    get/put/patch/delte product: base + "/product/<product_id>"
+    
+To access api you may use curl from the command line:
 
     $ curl -i http://127.0.0.1:5000
 
-You may also use api with python (or any other tool for that matter, get-requests from browser with url aswell):
+You may also send http-requests to running api with python CLI (or any other tool for that matter, get-requests from browser with url aswell):
 (note: you do not necessarily have to use venv for this, unless you want to avoid conflits with requests' package other versions)
 
     (.venv) $ python
     (.venv) >>> import requests
-    (.venv) >>> response = requests.get("http://127.0.0.1/category/2")
+    (.venv) >>> response = requests.get("http://127.0.0.1:5000/category/2")
     (.venv) >>> response
     output: <Resonse status_code>
     (.venv) >>> response.json()
     output: <json-format code>
     (.venv) >>> response.headers
     output: <response headers>
+    (.venv) .exit
     
 other commands: requests.put(url, data), .patch(url, data), .delete(url, data)
-api end-points:
-
-    base = "http://127.0.0.1:5000"
-    get list of categories: base + "/categories
-    get list of products from category (<category_id>): base + "products/<category_id>"
-    get/put/patch/delete category: base + "/category/<category_id>"
-    get/put/patch/delte product: base + "/product/<product_id>"
     
 To run unit tests:
 
