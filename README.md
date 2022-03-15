@@ -95,6 +95,15 @@ You may also use api with python (or any other tool for that matter, get-request
     (.venv) >>> response.headers
     output: <response headers>
     
+other commands: requests.put(url, data), .patch(url, data), .delete(url, data)
+api end-points:
+
+    base = "http://127.0.0.1:5000"
+    get list of categories: base + "/categories
+    get list of products from category (<category_id>): base + "products/<category_id>"
+    get/put/patch/delete category: base + "/category/<category_id>"
+    get/put/patch/delte product: base + "/product/<product_id>"
+    
 To run unit tests:
 
     (.venv) python test_app.py
