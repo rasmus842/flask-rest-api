@@ -1,16 +1,16 @@
 {% extends "layout.html" %}
 
-<!-- Administration page. Choose categories or products and perform crud -->
+<!-- Admin page for database manipulation -->
 
 {% block title %} Admin {% endblock %}
 
 {% block body %}
 
-    <!-- receives a list of categories to display to user
-         user selects and inputs a category and is redirected to products page -->
+    <!-- View categories in db -->
+
     <div class="mb-3">
         <h1>Choose category!</h1>
-        <form action="/shop/products/" method="post">
+        <form action="/shop" method="post">
             <!-- <input autocomplete="off" autofocus name="name" placeholder="Type product name" type="text"> -->
             <select class="form-class" name="category_name">
                 <option disable selected>Select category</option>
@@ -20,6 +20,34 @@
             </select>
             <input type="submit"> 
         </form>
+
+        <table class="table">
+            <colgroup>
+                <col span="2" style="background-color: rgb(136, 123, 123)">
+                <col style="background-color:crimson">
+            </colgroup>
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Category-id</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Delete</th>
+                </tr>
+            </thead>
+        <tbody>
+            {% for category in categories %}
+            {% set id = category["id"] %}
+            <tr>
+                <td>{{ category["id"] }}</td>
+                <td>{{ category["category_name"] }}</td>
+                <td>
+                    <form action={{ "/category/" ~ id }} method="delete" name="category_id">
+                        <input type="submit" name="category_id" width="50" value="delete">
+                    </form>
+                <td>
+            </tr>
+
+            {% endfor %}
+        </tbody>
     </div>
 
 {% endblock %}

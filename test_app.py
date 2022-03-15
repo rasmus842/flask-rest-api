@@ -1,20 +1,20 @@
-import unittest, requests, json, pickle
+import unittest, requests, json
 from app import Categories, Products, Category, Product
 from flask import Flask
 
 class TestAPI(unittest.TestCase):
     BASE = "http://127.0.0.1:5000"
     categories = [
-        {"id":0, "category_name":"toys"},
-        {"id":1, "category_name":"books"},
-        {"id":2, "category_name":"clothing"},  # category where there are no products
+        {"id":0, "name":"toys"},
+        {"id":1, "name":"books"},
+        {"id":2, "name":"clothing"},  # category where there are no products
     ]
     products = [
-        {"id":0, "product_name":"Teddy-Bear", "price":9.99, "stock":5, "category_id":0},
-        {"id":1, "product_name":"Yo-Yo", "price":1.50, "stock":80, "category_id":0},
-        {"id":2, "product_name":"The Hobbit", "price":11.00, "stock":15, "category_id":1},
-        {"id":3, "product_name":"A Storm of Swords", "price":7.99, "stock":2, "category_id":1},
-        {"id":4, "product_name":"Apple", "price":1.59, "stock":10, "category_id":3}, # product which doesn't belong to a category
+        {"id":0, "name":"Teddy-Bear", "price":9.99, "stock":5, "category_id":0},
+        {"id":1, "name":"Yo-Yo", "price":1.50, "stock":80, "category_id":0},
+        {"id":2, "name":"The Hobbit", "price":11.00, "stock":15, "category_id":1},
+        {"id":3, "name":"A Storm of Swords", "price":7.99, "stock":2, "category_id":1},
+        {"id":4, "name":"Apple", "price":1.59, "stock":10, "category_id":3}, # product which doesn't belong to a category
     ]
     
     # setup: create a new test_client, use a temporary database to test models
@@ -38,16 +38,16 @@ class TestAPI(unittest.TestCase):
     # test Category database model constructor
     def test_category_model(self):
         for c in self.categories:
-            new_cat = Categories(id=c["id"], category_name=c["category_name"])
+            new_cat = Categories(id=c["id"], name=c["name"])
             self.assertEqual(c["id"], new_cat.id)
-            self.assertEqual(c["category_name"], new_cat.category_name)
+            self.assertEqual(c["name"], new_cat.name)
 
     # test Product database model constructor
     def test_product_model(self):
         for p in self.products:
-            new_prod = Products(id=p["id"], product_name=p["product_name"], price=p["price"], stock=p["stock"], category_id=p["category_id"])
+            new_prod = Products(id=p["id"], name=p["name"], price=p["price"], stock=p["stock"], category_id=p["category_id"])
             self.assertEqual(p["id"], new_prod.id)
-            self.assertEqual(p["product_name"], new_prod.product_name)
+            self.assertEqual(p["name"], new_prod.name)
             self.assertEqual(p["price"], new_prod.price)
             self.assertEqual(p["stock"], new_prod.stock)
             self.assertEqual(p["category_id"], new_prod.category_id)
@@ -60,7 +60,7 @@ class TestAPI(unittest.TestCase):
         sc = r.status_code
         if sc == 200:
             self.assertEqual(r.headers["Content-Type"], "application/json")
-            self.assertTrue("category_name" in json.dumps(r.json()))
+            self.assertTrue("name" in json.dumps(r.json()))
 
     # test route get_products()
     # status_code, response is json-serializable, content correct
@@ -70,7 +70,7 @@ class TestAPI(unittest.TestCase):
             sc = r.status_code
             if sc == 200:
                 self.assertEqual(r.headers["Content-Type"], "application/json")
-                self.assertTrue("product_name" in json.dumps(r.json()))
+                self.assertTrue("name" in json.dumps(r.json()))
     
     # test route index()
     # status_code, content matches  (compare bytes), use pickle.dumps for text/html
@@ -80,27 +80,7 @@ class TestAPI(unittest.TestCase):
         #for c in categories:
         r = requests.get(self.BASE + "/")
         self.assertEqual(r.status_code, 200)
-        self.assertTrue(b"<select class" in pickle.dumps(r))
-
-    # test route shop()
-    # status_code, content match (compare bytes), use pickle.dumps for text/html
-    # !!!can also check for when category isn't found. check for product list aswell
-    # !!! app.py has to run while running test_app.py. This test will fail if not since using requests and not test_client
-    def test_shop(self):
-        for c in self.categories:
-            r = requests.post(self.BASE + "/shop", data=c)
-            self.assertEqual(r.status_code, 200)
-            r_bytes = pickle.dumps(r)
-            if c["category_name"] == "Select category":
-                self.assertTrue(b"Please return to main page!" in r_bytes)
-            elif b"Category not found!" in r_bytes:
-                self.assertTrue(b"<form action" in r_bytes)
-            else:
-                self.assertTrue(b"<thead class" in r_bytes)
-
-    # test route admin()
-    # !!!not yet implemented!
-    #def test_admin(self):
+        self.assertTrue("Rasmus Zalite" in json.dumps(r.json()))
 
 
     # test Category(Resource) and its get, put, patch, and delete methods
