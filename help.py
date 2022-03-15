@@ -1,6 +1,8 @@
 import requests
 from flask import Response
 
+# define some categories and products to fill database a bit
+
 BASE = "http://127.0.0.1:5000"
 
 categories = [
@@ -17,6 +19,8 @@ products = [
     {"id":3, "name":"A Storm of Swords", "price":7.99, "stock":2, "category_id":1},
     {"id":4, "name":"Apple", "price":1.59, "stock":10, "category_id":3}, 
 ]
+
+# prints out the response json
 
 for c in categories:
     response = requests.put(BASE + "/category/" + str(c["id"]), c)

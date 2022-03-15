@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 api = Api(app)
 
-# create a new db with sqlalchemy and sqlite
+# wrap app within a db
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
@@ -24,8 +24,8 @@ class Categories(db.Model):
     def __repr__(self):
         return "Product category: {}".format(self.name)
         
-# Create argument parsers to edit categories database
-# primary key not required, other arguments NOT NULL
+# Create argument parsers to edit categories table in db
+#  arguments NOT NULL
 category_crud_args = reqparse.RequestParser()
 category_crud_args.add_argument("id", type=int, help="Id of category", required=True)
 category_crud_args.add_argument("name", type=str, help="Name of category", required=True)
@@ -48,8 +48,8 @@ class Products(db.Model):
     def __repr__(self):
         return "Product: {}, price: {}, product category_id: {}".format(self.name, self.price, self.category_id)
 
-# Create argument parsers to edit product database
-# primary key not required, other arguments NOT NULL
+# Create argument parsers to edit products table in db
+# arguments NOT NULL
 product_crud_args = reqparse.RequestParser()
 product_crud_args.add_argument("id", type=int, help="Product id", required=True)
 product_crud_args.add_argument("name", type=str, help="Name of product", required=True)
@@ -59,8 +59,9 @@ product_crud_args.add_argument("category_id", type=int, help="Product category i
 
 
 # define objects for api: Category and Product. inherits from Resource
-
 # Define product category resource to perform CRUD
+# !!! does not deal with duplicates by name
+# note: in flask Response objects are automatically parsed into json if they are json-serializable (python dicts)
 class Category(Resource):
     def get(self, category_id):
         r = Categories.query.filter_by(id=category_id).first()
@@ -74,8 +75,6 @@ class Category(Resource):
         return {"category": output}, 200
 
     def put(self, category_id):
-        # no duplicates - i.e. cannot have same id and cannot have same name
-        # return the created object
         args = category_crud_args.parse_args()
         r = Categories.query.filter_by(id=category_id).first()
         if r:
@@ -125,6 +124,7 @@ class Category(Resource):
         return {"category deleted": output}, 200
 
 # crud for products
+# !!! does not deal with duplicates by name. products do not require the category that the category_id refers to to exist at this version
 class Product(Resource):
     def get(self, product_id):
         r = Products.query.filter_by(id=product_id).first()
@@ -240,9 +240,13 @@ def get_products(category_id):
         output.append(p)
     return {c.name: output}, 200
 
+# My first rest api, hello world
+# Thank you for reading this, I wish you a good day
 @app.route("/")
 def index():
     return {"message": "flask-rest-api by Rasmus Zalite!"}, 200
 
+# this enables to run app with command: "python app.py" instead of "export FLASK_APP=app.py" and "flask run"
+# assign debug=True for development
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)

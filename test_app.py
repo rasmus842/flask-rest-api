@@ -2,6 +2,8 @@ import unittest, requests, json
 from app import Categories, Products, Category, Product
 from flask import Flask
 
+# using Python unittest, requests, and flask test_client to perform unit-tests
+
 class TestAPI(unittest.TestCase):
     BASE = "http://127.0.0.1:5000"
     categories = [
@@ -52,7 +54,7 @@ class TestAPI(unittest.TestCase):
             self.assertEqual(p["stock"], new_prod.stock)
             self.assertEqual(p["category_id"], new_prod.category_id)
 
-    # test routes - get_categories(), get_products(), index(), exit(), and shop()
+    # test routes - get_categories(), get_products()
     # test get_categories()
     # status_code, response is json-serializable, content correct
     def test_get_categories(self):
@@ -72,19 +74,8 @@ class TestAPI(unittest.TestCase):
                 self.assertEqual(r.headers["Content-Type"], "application/json")
                 self.assertTrue("name" in json.dumps(r.json()))
     
-    # test route index()
-    # status_code, content matches  (compare bytes), use pickle.dumps for text/html
-    # !!!content has list of categories -- have not implemented mock-database for this
-    # !!! app.py has to run while running test_app.py. This test will fail if not since using requests and not test_client
-    def test_index(self):
-        #for c in categories:
-        r = requests.get(self.BASE + "/")
-        self.assertEqual(r.status_code, 200)
-        self.assertTrue("Rasmus Zalite" in json.dumps(r.json()))
-
 
     # test Category(Resource) and its get, put, patch, and delete methods
-
     # get method
     # status_code, is content json-serializable, and content itself
     def test_category_get(self):
@@ -122,7 +113,6 @@ class TestAPI(unittest.TestCase):
                 self.assertTrue("category deleted" in json.dumps(r.json()))
 
     # test Product(Resource) and its get,put,patch, and delete methods
-
     # get method
     # status_code, is content json-serializable, and content itself
     def test_product_get(self):
@@ -140,7 +130,6 @@ class TestAPI(unittest.TestCase):
             if r.status_code == 201:
                 self.assertEqual(r.headers["Content-Type"], "application/json")
                 self.assertTrue("product updated" in json.dumps(r.json()))
-        pass
 
     # patch method
     # status_code, is content json-serializable, and content itself
